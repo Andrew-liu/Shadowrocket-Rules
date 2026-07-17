@@ -1,6 +1,22 @@
-# Shadowrocket 配置文件
+<div align="center">
 
-一份开箱即用的 Shadowrocket 规则配置，导入后添加自己的节点或订阅即可使用。
+<h1>Shadowrocket Rules</h1>
+
+<p>一份开箱即用的 Shadowrocket 规则配置，导入后添加自己的节点或订阅即可使用。</p>
+
+<p>
+  <a href="https://github.com/Andrew-liu/Shadowrocket-Rules/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/Andrew-liu/Shadowrocket-Rules/release.yml?branch=main&style=for-the-badge&logo=githubactions&label=Release" alt="Release Workflow"></a>
+  <a href="https://raw.githubusercontent.com/Andrew-liu/Shadowrocket-Rules/refs/heads/release/Shadowrocket.conf"><img src="https://img.shields.io/badge/Shadowrocket-Config-7B61FF?style=for-the-badge" alt="Shadowrocket Config"></a>
+  <img src="https://img.shields.io/badge/AdBlock-Daily%20Build-brightgreen?style=for-the-badge" alt="Daily AdBlock Build">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License MIT"></a>
+</p>
+
+<p>
+  参考 <a href="https://github.com/LingJingMaster/Shadowrocket-Rules">LingJingMaster/Shadowrocket-Rules</a> 与
+  <a href="https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever">Johnshall/Shadowrocket-ADBlock-Rules-Forever</a>。
+</p>
+
+</div>
 
 ## 快速开始
 
