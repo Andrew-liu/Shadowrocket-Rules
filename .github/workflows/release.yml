@@ -1,0 +1,39 @@
+name: Release Shadowrocket Rules
+
+on:
+  schedule:
+    # 每日北京时间 09:00，晚于上游广告规则发布时间
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "Shadowrocket.conf"
+      - "*.list"
+      - "scripts/build_release.py"
+      - ".github/workflows/release.yml"
+      - "README.md"
+      - "LICENSE"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build release files
+        run: python3 scripts/build_release.py --output dist
+
+      - name: Publish release branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: release
+          publish_dir: dist
+          force_orphan: true
+          commit_message: "Nightly release"
