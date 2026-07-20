@@ -14,6 +14,11 @@ from pathlib import Path
 
 REPO_RAW_RELEASE = "https://raw.githubusercontent.com/Andrew-liu/Shadowrocket-Rules/refs/heads/release"
 DEFAULT_AD_SOURCE_URL = "https://raw.githubusercontent.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever/release/sr_ad_only.conf"
+DEFAULT_APPLE_DOMAIN_SOURCE_URL = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Apple/Apple_Domain.list"
+GENERATED_RULE_FILES = (
+    "Advertising.list",
+    "Apple_Domain.list",
+)
 OWNED_RULE_FILES = (
     "AI.list",
     "Apple.list",
@@ -25,6 +30,7 @@ COPY_FILES = OWNED_RULE_FILES + ("LICENSE",)
 AUTO_STATS_START = "<!-- AUTO-STATS:START -->"
 AUTO_STATS_END = "<!-- AUTO-STATS:END -->"
 MIN_AD_RULE_COUNT = 10000
+MIN_APPLE_DOMAIN_RULE_COUNT = 1000
 ALLOWED_AD_RULE_TYPES = {
     "DOMAIN",
     "DOMAIN-SUFFIX",
@@ -53,6 +59,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--output", type=Path, default=Path(__file__).resolve().parents[1] / "dist")
     parser.add_argument("--ad-source", default=os.environ.get("AD_RULE_SOURCE", DEFAULT_AD_SOURCE_URL))
+    parser.add_argument(
+        "--apple-domain-source",
+        default=os.environ.get("APPLE_DOMAIN_SOURCE", DEFAULT_APPLE_DOMAIN_SOURCE_URL),
+    )
     parser.add_argument("--validate", action="store_true", help="Validate generated release files before publishing.")
     return parser.parse_args()
 
@@ -115,6 +125,30 @@ def convert_ad_rules(source_text: str) -> list[str]:
     return result
 
 
+def convert_apple_domain_rules(source_text: str) -> list[str]:
+    result: list[str] = []
+    seen: set[str] = set()
+
+    for raw_line in source_text.splitlines():
+        line = strip_inline_comment(raw_line)
+        if not line or line.startswith("#") or "," in line:
+            continue
+
+        domain = line.lstrip(".").strip().lower()
+        if not domain or "." not in domain or " " in domain:
+            continue
+
+        converted = f"DOMAIN-SUFFIX,{domain}"
+        if converted not in seen:
+            seen.add(converted)
+            result.append(converted)
+
+    if not result:
+        raise RuntimeError("No Apple domain rules were converted from source")
+
+    return result
+
+
 def build_advertising_list(ad_rules: list[str], ad_source: str, build_time: dt.datetime) -> str:
     header = [
         "# Shadowrocket-Rules Advertising.list",
@@ -126,6 +160,19 @@ def build_advertising_list(ad_rules: list[str], ad_source: str, build_time: dt.d
         "",
     ]
     return "\n".join(header + ad_rules) + "\n"
+
+
+def build_apple_domain_list(apple_domain_rules: list[str], apple_domain_source: str, build_time: dt.datetime) -> str:
+    header = [
+        "# Shadowrocket-Rules Apple_Domain.list",
+        "# Generated from blackmatrix7 Apple_Domain.list bare domain set",
+        f"# Source: {apple_domain_source}",
+        f"# Build time: {build_time.strftime('%Y-%m-%d %H:%M:%S UTC')}",
+        f"# Rule Count: {len(apple_domain_rules)}",
+        "# Policy is supplied by Shadowrocket.conf RULE-SET target group.",
+        "",
+    ]
+    return "\n".join(header + apple_domain_rules) + "\n"
 
 
 def build_shadowrocket_conf(repo_root: Path, build_time: dt.datetime) -> str:
@@ -174,16 +221,22 @@ def count_rules(path: Path) -> int:
     return len(iter_rule_lines(path.read_text(encoding="utf-8", errors="ignore")))
 
 
-def extract_ad_rule_count(advertising_text: str) -> int:
-    match = re.search(r"^# Rule Count:\s*(\d+)\s*$", advertising_text, flags=re.MULTILINE)
+def extract_rule_count_header(text: str, file_name: str) -> int:
+    match = re.search(r"^# Rule Count:\s*(\d+)\s*$", text, flags=re.MULTILINE)
     if not match:
-        raise RuntimeError("Advertising.list is missing Rule Count header")
+        raise RuntimeError(f"{file_name} is missing Rule Count header")
     return int(match.group(1))
 
 
-def build_readme(repo_root: Path, output: Path, ad_source: str, build_time: dt.datetime) -> str:
+def build_readme(
+    repo_root: Path,
+    output: Path,
+    ad_source: str,
+    apple_domain_source: str,
+    build_time: dt.datetime,
+) -> str:
     readme = (repo_root / "README.md").read_text(encoding="utf-8")
-    rule_files = ("Advertising.list",) + OWNED_RULE_FILES
+    rule_files = GENERATED_RULE_FILES + OWNED_RULE_FILES
     rows = []
     for file_name in rule_files:
         rule_path = output / file_name
@@ -195,6 +248,7 @@ def build_readme(repo_root: Path, output: Path, ad_source: str, build_time: dt.d
             AUTO_STATS_START,
             f"- 更新时间（UTC）：`{build_time.strftime('%Y-%m-%d %H:%M:%S')}`",
             f"- 广告规则源：`{ad_source}`",
+            f"- Apple 域名源：`{apple_domain_source}`",
             "",
             "| 规则文件 | 规则数 |",
             "|----------|--------:|",
@@ -225,7 +279,7 @@ def validate_rule_file(path: Path) -> list[str]:
 
 
 def validate_release(output: Path) -> None:
-    required_files = ("Shadowrocket.conf", "Advertising.list", "README.md") + OWNED_RULE_FILES
+    required_files = ("Shadowrocket.conf", "README.md") + GENERATED_RULE_FILES + OWNED_RULE_FILES
     missing = [file_name for file_name in required_files if not (output / file_name).exists()]
     errors = [f"Missing release file: {file_name}" for file_name in missing]
 
@@ -238,16 +292,28 @@ def validate_release(output: Path) -> None:
             errors.append("Shadowrocket.conf still references QuantumultX WeChat rules")
         if "rule/Shadowrocket/WeChat/WeChat.list" not in conf:
             errors.append("Shadowrocket.conf does not reference Shadowrocket WeChat rules")
+        if f"{REPO_RAW_RELEASE}/Apple_Domain.list" not in conf:
+            errors.append("Shadowrocket.conf does not reference generated Apple_Domain.list")
 
     ad_path = output / "Advertising.list"
     if ad_path.exists():
         ad_text = ad_path.read_text(encoding="utf-8", errors="ignore")
-        header_count = extract_ad_rule_count(ad_text)
+        header_count = extract_rule_count_header(ad_text, "Advertising.list")
         actual_count = count_rules(ad_path)
         if header_count != actual_count:
             errors.append(f"Advertising.list Rule Count mismatch: header={header_count}, actual={actual_count}")
         if actual_count < MIN_AD_RULE_COUNT:
             errors.append(f"Advertising.list rule count is too low: {actual_count}")
+
+    apple_domain_path = output / "Apple_Domain.list"
+    if apple_domain_path.exists():
+        apple_domain_text = apple_domain_path.read_text(encoding="utf-8", errors="ignore")
+        header_count = extract_rule_count_header(apple_domain_text, "Apple_Domain.list")
+        actual_count = count_rules(apple_domain_path)
+        if header_count != actual_count:
+            errors.append(f"Apple_Domain.list Rule Count mismatch: header={header_count}, actual={actual_count}")
+        if actual_count < MIN_APPLE_DOMAIN_RULE_COUNT:
+            errors.append(f"Apple_Domain.list rule count is too low: {actual_count}")
 
     for rule_path in sorted(output.glob("*.list")):
         errors.extend(validate_rule_file(rule_path))
@@ -275,6 +341,13 @@ def main() -> int:
     (output / "Advertising.list").write_text(
         build_advertising_list(ad_rules, args.ad_source, build_time), encoding="utf-8"
     )
+
+    apple_domain_source_text = read_text_from_source(args.apple_domain_source)
+    apple_domain_rules = convert_apple_domain_rules(apple_domain_source_text)
+    (output / "Apple_Domain.list").write_text(
+        build_apple_domain_list(apple_domain_rules, args.apple_domain_source, build_time), encoding="utf-8"
+    )
+
     (output / "Shadowrocket.conf").write_text(build_shadowrocket_conf(repo_root, build_time), encoding="utf-8")
 
     for file_name in COPY_FILES:
@@ -282,7 +355,9 @@ def main() -> int:
         if src.exists():
             shutil.copy2(src, output / file_name)
 
-    (output / "README.md").write_text(build_readme(repo_root, output, args.ad_source, build_time), encoding="utf-8")
+    (output / "README.md").write_text(
+        build_readme(repo_root, output, args.ad_source, args.apple_domain_source, build_time), encoding="utf-8"
+    )
 
     if args.validate:
         validate_release(output)
@@ -290,6 +365,7 @@ def main() -> int:
 
     print(f"Built release at {output}")
     print(f"Advertising rules: {len(ad_rules)}")
+    print(f"Apple domain rules: {len(apple_domain_rules)}")
     return 0
 
 

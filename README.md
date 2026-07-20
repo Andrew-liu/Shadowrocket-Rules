@@ -39,10 +39,12 @@
 <!-- AUTO-STATS:START -->
 - 更新时间（UTC）：`发布构建时自动写入`
 - 广告规则源：`发布构建时自动写入`
+- Apple 域名源：`发布构建时自动写入`
 
 | 规则文件 | 规则数 |
 |----------|--------:|
 | `Advertising.list` | 发布构建时自动写入 |
+| `Apple_Domain.list` | 发布构建时自动写入 |
 | `AI.list` | 发布构建时自动写入 |
 | `Apple.list` | 发布构建时自动写入 |
 | `ApplePush.list` | 发布构建时自动写入 |
@@ -54,11 +56,12 @@
 
 - 广告过滤规则已迁移为本仓库 `release/Advertising.list`，由 `🛑 广告拦截` 策略组统一执行。
 - 保留 blackmatrix7 `BlockHttpDNS`，优先拦截 App 内置 HTTPDNS，减少广告和分流规则被绕过。
-- 本仓库维护 `AI.list`、`Google.list`、`Apple.list`、`ApplePush.list`、`HK_Broker.list`。
+- 本仓库维护 `AI.list`、`Google.list`、`Apple.list`、`ApplePush.list`、`HK_Broker.list`，并在发布时生成 `Apple_Domain.list`。
 - `Google.list` 包含 Google / Gemini 相关规则，`🔍 谷歌服务` 默认走日本节点，并提供香港节点作为手动可选分区。
 - 新增新加坡、韩国自动测速节点组，方便按地区手动切换。
 - 新增 PayPal、Twitter、Facebook、Amazon 独立分流策略组。
 - 国内常用 App 增加前置直连规则，覆盖 BiliBili、网易云音乐、百度、豆瓣、微信、新浪、知乎、小红书、抖音。
+- `Apple_Domain.list` 发布时从 blackmatrix7 Apple bare domain set 同步转换，提供完整 Apple 域名覆盖。
 - `Apple.list` 是本仓维护的 Apple overlay / 精简补充规则，补充 iCloud Photos、CloudKit、Apple CDN，并保留少量 blackmatrix7 Apple 规则。
 - `ApplePush.list` 将 Apple Push Notification service 相关域名优先归入 `🍎 苹果推送`。
 - `HK_Broker.list` 补充富途 / moomoo / 长桥 / 老虎 / TradeUP / Schwab 证券域名及交易 IP 段。
@@ -129,6 +132,7 @@
 - [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script) — 主要分流规则集
 - [Johnshall/Shadowrocket-ADBlock-Rules-Forever](https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever) — 广告过滤规则来源，每日转换为本仓库 `release/Advertising.list`
 - [iab0x00/ProxyRules](https://github.com/iab0x00/ProxyRules) — AI 服务补充规则
+- `Apple_Domain.list` 发布时从 blackmatrix7 Apple bare domain set 转换生成，作为完整 Apple 域名规则
 - `Apple.list` 是本仓维护的 Apple overlay / 精简补充规则，用于补充 iCloud Photos / CloudKit / Apple CDN 直连域名
 - `HK_Broker.list` 补充富途 / moomoo / 长桥 / 老虎 / TradeUP / Schwab 证券域名及交易 IP 段
 
