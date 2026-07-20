@@ -26,8 +26,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build release files
-        run: python3 scripts/build_release.py --output dist
+      - name: Build and validate release files
+        run: python3 scripts/build_release.py --output dist --validate
 
       - name: Publish release branch
         uses: peaceiris/actions-gh-pages@v4

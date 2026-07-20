@@ -32,6 +32,23 @@
 - `main` 分支维护源配置、规则列表、构建脚本和 GitHub Actions。
 - `release` 分支由 GitHub Actions 每日北京时间 09:00 自动生成，是 Shadowrocket 的导入和更新地址。
 - `Advertising.list` 不在 `main` 手工维护，发布时从 `Shadowrocket-ADBlock-Rules-Forever` 的 `sr_ad_only.conf` 转换生成。
+- 发布前会校验生成配置、规则数量、规则类型和 WeChat 规则源，校验通过后才发布 `release` 分支。
+
+## 自动统计
+
+<!-- AUTO-STATS:START -->
+- 更新时间（UTC）：`发布构建时自动写入`
+- 广告规则源：`发布构建时自动写入`
+
+| 规则文件 | 规则数 |
+|----------|--------:|
+| `Advertising.list` | 发布构建时自动写入 |
+| `AI.list` | 发布构建时自动写入 |
+| `Apple.list` | 发布构建时自动写入 |
+| `ApplePush.list` | 发布构建时自动写入 |
+| `Google.list` | 发布构建时自动写入 |
+| `HK_Broker.list` | 发布构建时自动写入 |
+<!-- AUTO-STATS:END -->
 
 ## 当前重点
 
@@ -42,7 +59,7 @@
 - 新增新加坡、韩国自动测速节点组，方便按地区手动切换。
 - 新增 PayPal、Twitter、Facebook、Amazon 独立分流策略组。
 - 国内常用 App 增加前置直连规则，覆盖 BiliBili、网易云音乐、百度、豆瓣、微信、新浪、知乎、小红书、抖音。
-- `Apple.list` 基于 blackmatrix7 Apple 规则，补充 iCloud Photos、CloudKit、Apple CDN 相关域名。
+- `Apple.list` 是本仓维护的 Apple overlay / 精简补充规则，补充 iCloud Photos、CloudKit、Apple CDN，并保留少量 blackmatrix7 Apple 规则。
 - `ApplePush.list` 将 Apple Push Notification service 相关域名优先归入 `🍎 苹果推送`。
 - `HK_Broker.list` 补充富途 / moomoo / 长桥 / 老虎 / TradeUP / Schwab 证券域名及交易 IP 段。
 
@@ -112,7 +129,7 @@
 - [blackmatrix7/ios_rule_script](https://github.com/blackmatrix7/ios_rule_script) — 主要分流规则集
 - [Johnshall/Shadowrocket-ADBlock-Rules-Forever](https://github.com/Johnshall/Shadowrocket-ADBlock-Rules-Forever) — 广告过滤规则来源，每日转换为本仓库 `release/Advertising.list`
 - [iab0x00/ProxyRules](https://github.com/iab0x00/ProxyRules) — AI 服务补充规则
-- `Apple.list` 基于 blackmatrix7 Apple 规则，并补充 iCloud Photos / Apple CDN 直连域名
+- `Apple.list` 是本仓维护的 Apple overlay / 精简补充规则，用于补充 iCloud Photos / CloudKit / Apple CDN 直连域名
 - `HK_Broker.list` 补充富途 / moomoo / 长桥 / 老虎 / TradeUP / Schwab 证券域名及交易 IP 段
 
 ## 其他特性
