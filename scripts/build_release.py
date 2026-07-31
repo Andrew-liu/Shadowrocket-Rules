@@ -308,6 +308,15 @@ def validate_release(output: Path) -> None:
                 "🤖 AI 服务 = select,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
                 "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日本节点"
             ),
+            "Japan-first X policy": (
+                "𝕏 X 服务 = select,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
+                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日本节点"
+            ),
+            "X core bootstrap rule": "DOMAIN-SUFFIX,x.com,𝕏 X 服务",
+            "X media bootstrap rule": "DOMAIN-SUFFIX,twimg.com,𝕏 X 服务",
+            "X complete ruleset": (
+                "rule/Shadowrocket/Twitter/Twitter.list,𝕏 X 服务"
+            ),
         }
         for description, fragment in required_conf_fragments.items():
             if fragment not in conf:

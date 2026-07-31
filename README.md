@@ -64,8 +64,10 @@
 - 新增 `🛟 自动节点` 全局测速组，境外与兜底流量默认使用经过健康检查的节点，不再默认裸走 `PROXY`。
 - 全部自动测速组改用 YouTube HTTPS 204 探测，每 120 秒检查一次，并设置 100ms 切换容差。
 - GitHub / GitHub Raw 更新域名使用内联前置规则，避免远程规则尚未下载时形成启动闭环。
+- `𝕏 X 服务` 默认走日本节点，并内联 `x.com`、`twitter.com`、`t.co`、`twimg.com` 等核心域名；美国节点和自动节点作为备用。
+- Google、ChatGPT/AI 与 X 三类高频服务统一日本优先，减少跨地区出口变化。
 - 新增新加坡、韩国自动测速节点组，方便按地区手动切换。
-- 新增 PayPal、Twitter、Facebook、Amazon 独立分流策略组。
+- 新增 PayPal、X、Facebook、Amazon 独立分流策略组。
 - 国内常用 App 增加前置直连规则，覆盖 BiliBili、网易云音乐、百度、豆瓣、微信、新浪、知乎、小红书、抖音。
 - `Apple_Domain.list` 发布时从 blackmatrix7 Apple bare domain set 同步转换，提供完整 Apple 域名覆盖。
 - `Apple.list` 是本仓维护的 Apple overlay / 精简补充规则，补充 iCloud Photos、CloudKit、Apple CDN，并保留少量 blackmatrix7 Apple 规则。
@@ -78,12 +80,12 @@
 |------|----------|----------|
 | 🧱 DNS 防泄露 | REJECT | 节点选择、DIRECT |
 | 🛑 广告拦截 | REJECT | DIRECT、节点选择 |
-| 🤖 AI 服务 | 🇺🇸 美国节点 | 节点选择、PROXY、DIRECT |
+| 🤖 AI 服务 | 🇯🇵 日本节点 | 🇺🇸 美国节点、自动节点、节点选择、PROXY、DIRECT |
 | 📹 油管视频 | 节点选择 | PROXY、DIRECT |
 | 🔍 谷歌服务 | 🇯🇵 日本节点 | 🇭🇰 香港节点、节点选择、PROXY、DIRECT |
 | Ⓜ️ 微软服务 | 节点选择 | PROXY、DIRECT |
 | 💳 PayPal | 节点选择 | PROXY、DIRECT |
-| 🐦 Twitter | 节点选择 | PROXY、DIRECT |
+| 𝕏 X 服务 | 🇯🇵 日本节点 | 🇺🇸 美国节点、自动节点、节点选择、PROXY、DIRECT |
 | 📘 Facebook | 节点选择 | PROXY、DIRECT |
 | 🛒 Amazon | 节点选择 | PROXY、DIRECT |
 | 🍎 苹果推送 | 节点选择 | PROXY、DIRECT |
@@ -107,7 +109,8 @@
 | 🇰🇷 韩国节点 | 自动测速 | 按节点名关键词匹配韩国节点 |
 | 🇺🇸 美国节点 | 自动测速 | 按节点名关键词匹配美国节点 |
 | 🌐 其他节点 | 自动测速 | 匹配不属于以上地区的节点 |
-| 💳 PayPal / 🐦 Twitter / 📘 Facebook / 🛒 Amazon | 手动选择 | 海外服务独立分流，可切节点选择、PROXY、DIRECT 或 REJECT |
+| 𝕏 X 服务 | 手动选择 | 默认日本节点，覆盖 X 主站、短链、图片视频和直播域名，可切美国或自动节点 |
+| 💳 PayPal / 📘 Facebook / 🛒 Amazon | 手动选择 | 海外服务独立分流，可切节点选择、PROXY、DIRECT 或 REJECT |
 
 ## 分流规则
 
@@ -124,16 +127,17 @@
 | 7 | 🔒 哔哩哔哩 / 国内常用 App | DIRECT |
 | 8 | 🏠 私有网络 / 局域网 | DIRECT |
 | 9 | 📲 电报消息 | 节点选择 |
-| 10 | 💳 PayPal / 🐦 Twitter / 📘 Facebook / 🛒 Amazon | 节点选择 |
-| 11 | 🐱 代码托管（GitHub、GitLab、Atlassian） | 节点选择 |
-| 12 | Ⓜ️ 微软服务 | 节点选择 |
-| 13 | 📈 券商服务（富途 / moomoo / 长桥 / 老虎） | 香港节点 |
-| 14 | 🍎 苹果推送 | 节点选择 |
-| 15 | 🍏 苹果服务 | DIRECT |
-| 16 | 🔒 国内服务 | DIRECT |
-| 17 | 🌍 非中国（境外流量） | 自动节点 |
-| 18 | GEOIP CN | DIRECT |
-| 19 | 🐟 漏网之鱼（兜底） | 自动节点 |
+| 10 | 𝕏 X 服务 | 日本节点，美国与自动节点备用 |
+| 11 | 💳 PayPal / 📘 Facebook / 🛒 Amazon | 节点选择 |
+| 12 | 🐱 代码托管（GitHub、GitLab、Atlassian） | 节点选择 |
+| 13 | Ⓜ️ 微软服务 | 节点选择 |
+| 14 | 📈 券商服务（富途 / moomoo / 长桥 / 老虎） | 香港节点 |
+| 15 | 🍎 苹果推送 | 节点选择 |
+| 16 | 🍏 苹果服务 | DIRECT |
+| 17 | 🔒 国内服务 | DIRECT |
+| 18 | 🌍 非中国（境外流量） | 自动节点 |
+| 19 | GEOIP CN | DIRECT |
+| 20 | 🐟 漏网之鱼（兜底） | 自动节点 |
 
 ## 规则集来源
 
@@ -170,7 +174,7 @@
 
 - 地区分组通过节点名称关键词自动匹配，请确保你的节点名称包含地区标识（如 🇭🇰、HK、香港、SG、新加坡、KR、韩国等）
 - 自动节点会排除名称包含“剩余、流量、套餐、到期、官网、客服、邀请”的订阅信息条目
-- Google、AI、PayPal、Twitter、Facebook、Amazon、非中国和漏网之鱼的默认出口可在 App 内手动切换
+- Google、AI 与 X 默认走日本节点，也可在 App 内切换备用出口；PayPal、Facebook、Amazon、非中国和漏网之鱼同样支持手动切换
 - 建议在首页 → 全局路由中开启“启用回退”，用实际连接失败触发节点切换，弥补单 URL 健康检查的局限
 - 若订阅域名在当前网络不可直连，请将域名（不要包含订阅 Token）作为前置 `DOMAIN` 规则指向 `🛟 自动节点`
 - 如需 HTTPS 解密功能，请在 Shadowrocket 中生成并安装 CA 证书
