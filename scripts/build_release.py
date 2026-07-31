@@ -295,6 +295,48 @@ def validate_release(output: Path) -> None:
         if f"{REPO_RAW_RELEASE}/Apple_Domain.list" not in conf:
             errors.append("Shadowrocket.conf does not reference generated Apple_Domain.list")
 
+        required_conf_fragments = {
+            "v1.1 config version": "# 配置版本: v1.1",
+            "automatic node health check": (
+                "🛟 自动节点 = url-test,url=https://www.youtube.com/generate_204,"
+                "interval=120,tolerance=100,timeout=5"
+            ),
+            "automatic global policy": "🌍 非中国 = select,🛟 自动节点",
+            "automatic final policy": "🐟 漏网之鱼 = select,🛟 自动节点",
+            "GitHub Raw bootstrap rule": "DOMAIN,raw.githubusercontent.com,🛟 自动节点",
+            "Japan-first AI policy": (
+                "🤖 AI 服务 = select,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
+                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日本节点"
+            ),
+        }
+        for description, fragment in required_conf_fragments.items():
+            if fragment not in conf:
+                errors.append(f"Shadowrocket.conf is missing {description}")
+
+        if "url=http://www.gstatic.com/generate_204" in conf:
+            errors.append("Shadowrocket.conf still uses the legacy HTTP health check")
+
+        dns_match = re.search(r"^dns-server\s*=\s*(.+)$", conf, flags=re.MULTILINE)
+        fallback_dns_match = re.search(r"^fallback-dns-server\s*=\s*(.+)$", conf, flags=re.MULTILINE)
+        if not dns_match or not fallback_dns_match:
+            errors.append("Shadowrocket.conf is missing primary or fallback DNS settings")
+        elif dns_match.group(1).strip() == fallback_dns_match.group(1).strip():
+            errors.append("Shadowrocket.conf primary and fallback DNS settings are identical")
+
+    ai_path = output / "AI.list"
+    if ai_path.exists():
+        ai_rules = ai_path.read_text(encoding="utf-8", errors="ignore")
+        required_ai_rules = (
+            "DOMAIN-SUFFIX,chatgpt.com",
+            "DOMAIN-SUFFIX,oaistatic.com",
+            "DOMAIN-SUFFIX,oaiusercontent.com",
+            "DOMAIN-SUFFIX,oaistatsig.com",
+            "DOMAIN,cdn.openaimerge.com",
+        )
+        for rule in required_ai_rules:
+            if rule not in ai_rules:
+                errors.append(f"AI.list is missing required ChatGPT rule: {rule}")
+
     ad_path = output / "Advertising.list"
     if ad_path.exists():
         ad_text = ad_path.read_text(encoding="utf-8", errors="ignore")
