@@ -298,19 +298,27 @@ def validate_release(output: Path) -> None:
         required_conf_fragments = {
             "v1.1 config version": "# 配置版本: v1.1",
             "automatic node health check": (
-                "🛟 自动节点 = url-test,url=https://www.youtube.com/generate_204,"
-                "interval=120,tolerance=100,timeout=5"
+                "🛟 自动节点 = url-test,url=https://www.gstatic.com/generate_204,"
+                "interval=300,tolerance=180,timeout=5"
+            ),
+            "Japan-first fallback group": (
+                "🇯🇵 日区优先 = fallback,🇯🇵 日本节点,🛟 自动节点,"
+                "url=https://www.gstatic.com/generate_204,interval=300,timeout=5"
+            ),
+            "HK-first fallback group": (
+                "🇭🇰 港区优先 = fallback,🇭🇰 香港节点,DIRECT,"
+                "url=https://www.gstatic.com/generate_204,interval=300,timeout=5"
             ),
             "automatic global policy": "🌍 非中国 = select,🛟 自动节点",
             "automatic final policy": "🐟 漏网之鱼 = select,🛟 自动节点",
             "GitHub Raw bootstrap rule": "DOMAIN,raw.githubusercontent.com,🛟 自动节点",
             "Japan-first AI policy": (
-                "🤖 AI 服务 = select,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
-                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日本节点"
+                "🤖 AI 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
+                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日区优先"
             ),
             "Japan-first X policy": (
-                "𝕏 X 服务 = select,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
-                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日本节点"
+                "𝕏 X 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
+                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日区优先"
             ),
             "X core bootstrap rule": "DOMAIN-SUFFIX,x.com,𝕏 X 服务",
             "X media bootstrap rule": "DOMAIN-SUFFIX,twimg.com,𝕏 X 服务",
