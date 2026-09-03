@@ -316,6 +316,10 @@ def validate_release(output: Path) -> None:
                 "🤖 AI 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
                 "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日区优先"
             ),
+            "main-policy-first Google policy": (
+                "🔍 谷歌服务 = select,🚀 节点选择,🇯🇵 日区优先,🇯🇵 日本节点,🇭🇰 香港节点,"
+                "PROXY,DIRECT,REJECT,policy-select-name=🚀 节点选择"
+            ),
             "Japan-first X policy": (
                 "𝕏 X 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
                 "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日区优先"

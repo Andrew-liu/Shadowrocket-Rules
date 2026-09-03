@@ -58,7 +58,7 @@
 - 广告过滤规则已迁移为本仓库 `release/Advertising.list`，由 `🛑 广告拦截` 策略组统一执行。
 - 保留 blackmatrix7 `BlockHttpDNS`，优先拦截 App 内置 HTTPDNS，减少广告和分流规则被绕过。
 - 本仓库维护 `AI.list`、`Google.list`、`Apple.list`、`ApplePush.list`、`HK_Broker.list`，并在发布时生成 `Apple_Domain.list`。
-- `Google.list` 包含 Google / Gemini 相关规则，`🔍 谷歌服务` 默认走日区优先（日本节点全部失效时自动回退自动节点），并提供香港节点作为手动可选分区。
+- `Google.list` 包含 Google / Gemini 相关规则，`🔍 谷歌服务` 默认跟随 `🚀 节点选择` 当前所选节点，并保留日本、香港等节点作为手动可选分区。
 - `🤖 AI 服务` 默认走日区优先，覆盖 ChatGPT、Claude、Copilot、Grok、OpenRouter 与 Perplexity；美国节点和自动节点作为备用。
 - ChatGPT 规则仅保留核心主站、静态资源、上传、功能配置和必要验证域名，避免第三方客服、支付与遥测服务被过度分流。
 - 新增 `🛟 自动节点` 全局测速组，境外与兜底流量默认使用经过健康检查的节点，不再默认裸走 `PROXY`。
@@ -66,7 +66,7 @@
 - 新增 `🇯🇵 日区优先`、`🇭🇰 港区优先` fallback 兜底组：日区/港区节点全部失效时自动回退到自动节点或直连，恢复后自动切回，无需手动干预。
 - GitHub / GitHub Raw 更新域名使用内联前置规则，避免远程规则尚未下载时形成启动闭环。
 - `𝕏 X 服务` 默认走日区优先，并内联 `x.com`、`twitter.com`、`t.co`、`twimg.com` 等核心域名；美国节点和自动节点作为备用。
-- Google、ChatGPT/AI 与 X 三类高频服务统一日本优先，减少跨地区出口变化。
+- Google / Gemini 跟随主策略当前所选节点，ChatGPT/AI 与 X 继续日本优先。
 - 新增新加坡、韩国自动测速节点组，方便按地区手动切换。
 - 新增 PayPal、X、Facebook、Amazon 独立分流策略组。
 - 国内常用 App 增加前置直连规则，覆盖 BiliBili、网易云音乐、百度、豆瓣、微信、新浪、知乎、小红书、抖音。
@@ -83,7 +83,7 @@
 | 🛑 广告拦截 | REJECT | DIRECT、节点选择 |
 | 🤖 AI 服务 | 🇯🇵 日区优先 | 🇯🇵 日本节点、🇺🇸 美国节点、自动节点、节点选择、PROXY、DIRECT |
 | 📹 油管视频 | 节点选择 | PROXY、DIRECT |
-| 🔍 谷歌服务 | 🇯🇵 日区优先 | 🇯🇵 日本节点、🇭🇰 香港节点、节点选择、PROXY、DIRECT |
+| 🔍 谷歌服务 | 节点选择 | 🇯🇵 日区优先、🇯🇵 日本节点、🇭🇰 香港节点、PROXY、DIRECT |
 | Ⓜ️ 微软服务 | 节点选择 | PROXY、DIRECT |
 | 💳 PayPal | 节点选择 | PROXY、DIRECT |
 | 𝕏 X 服务 | 🇯🇵 日区优先 | 🇯🇵 日本节点、🇺🇸 美国节点、自动节点、节点选择、PROXY、DIRECT |
@@ -124,7 +124,7 @@
 | 1 | GitHub / GitHub Raw 更新引导 | 自动节点 |
 | 2 | 🧱 DNS 防泄露（HTTPDNS） | REJECT |
 | 3 | 🛑 广告拦截 | REJECT |
-| 4 | 🔍 谷歌服务（含 Gemini） | 日区优先，可手动切香港节点 |
+| 4 | 🔍 谷歌服务（含 Gemini） | 跟随节点选择，可手动切日本或香港节点 |
 | 5 | 🤖 AI 服务（ChatGPT、Claude 等） | 日本节点，美国与自动节点备用 |
 | 6 | 📹 油管视频 | 节点选择 |
 | 7 | 🔒 哔哩哔哩 / 国内常用 App | DIRECT |
@@ -177,7 +177,7 @@
 
 - 地区分组通过节点名称关键词自动匹配，请确保你的节点名称包含地区标识（如 🇭🇰、HK、香港、SG、新加坡、KR、韩国等）
 - 自动节点会排除名称包含“剩余、流量、套餐、到期、官网、客服、邀请”的订阅信息条目
-- Google、AI 与 X 默认走日区优先（日本节点全挂时自动回退自动节点），也可在 App 内切换备用出口；PayPal、Facebook、Amazon、非中国和漏网之鱼同样支持手动切换
+- Google / Gemini 默认跟随 `🚀 节点选择` 当前所选节点；AI 与 X 默认走日区优先，也可在 App 内切换备用出口；PayPal、Facebook、Amazon、非中国和漏网之鱼同样支持手动切换
 - 建议在首页 → 全局路由中开启“启用回退”，用实际连接失败触发节点切换，弥补单 URL 健康检查的局限
 - 若订阅域名在当前网络不可直连，请将域名（不要包含订阅 Token）作为前置 `DOMAIN` 规则指向 `🛟 自动节点`
 - 如需 HTTPS 解密功能，请在 Shadowrocket 中生成并安装 CA 证书
