@@ -286,8 +286,8 @@ def validate_release(output: Path) -> None:
     conf_path = output / "Shadowrocket.conf"
     if conf_path.exists():
         conf = conf_path.read_text(encoding="utf-8", errors="ignore")
-        if "refs/heads/main" in conf:
-            errors.append("Shadowrocket.conf still contains refs/heads/main")
+        if "raw.githubusercontent.com/Andrew-liu/Shadowrocket-Rules/refs/heads/main" in conf:
+            errors.append("Shadowrocket.conf still references this repository's main branch")
         if "rule/QuantumultX/WeChat/WeChat.list" in conf:
             errors.append("Shadowrocket.conf still references QuantumultX WeChat rules")
         if "rule/Shadowrocket/WeChat/WeChat.list" not in conf:
@@ -319,6 +319,14 @@ def validate_release(output: Path) -> None:
             "main-policy-first Google policy": (
                 "🔍 谷歌服务 = select,🚀 节点选择,🇯🇵 日区优先,🇯🇵 日本节点,🇭🇰 香港节点,"
                 "PROXY,DIRECT,REJECT,policy-select-name=🚀 节点选择"
+            ),
+            "US-first Apple AI policy": (
+                "🧠 Apple AI = select,🇺🇸 美国节点,🛟 自动节点,🚀 节点选择,PROXY,DIRECT,REJECT,"
+                "policy-select-name=🇺🇸 美国节点"
+            ),
+            "Apple AI ruleset": (
+                "RULE-SET,https://raw.githubusercontent.com/RocM301/Apple-Rule/refs/heads/main/"
+                "Apple-AI.list,🧠 Apple AI"
             ),
             "Japan-first X policy": (
                 "𝕏 X 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"

@@ -89,6 +89,7 @@
 | 𝕏 X 服务 | 🇯🇵 日区优先 | 🇯🇵 日本节点、🇺🇸 美国节点、自动节点、节点选择、PROXY、DIRECT |
 | 📘 Facebook | 节点选择 | PROXY、DIRECT |
 | 🛒 Amazon | 节点选择 | PROXY、DIRECT |
+| 🧠 Apple AI | 🇺🇸 美国节点 | 自动节点、节点选择、PROXY、DIRECT |
 | 🍎 苹果推送 | 节点选择 | PROXY、DIRECT |
 | 🍏 苹果服务 | DIRECT | 节点选择、PROXY |
 | 📈 券商服务 | 🇭🇰 港区优先 | 🇭🇰 香港节点、DIRECT、节点选择、PROXY |
@@ -136,11 +137,12 @@
 | 13 | Ⓜ️ 微软服务 | 节点选择 |
 | 14 | 📈 券商服务（富途 / moomoo / 长桥 / 老虎） | 港区优先 |
 | 15 | 🍎 苹果推送 | 节点选择 |
-| 16 | 🍏 苹果服务 | DIRECT |
-| 17 | 🔒 国内服务 | DIRECT |
-| 18 | 🌍 非中国（境外流量） | 自动节点 |
-| 19 | GEOIP CN | DIRECT |
-| 20 | 🐟 漏网之鱼（兜底） | 自动节点 |
+| 16 | 🧠 Apple AI（Apple Intelligence / Siri / Private Relay） | 美国节点 |
+| 17 | 🍏 苹果服务 | DIRECT |
+| 18 | 🔒 国内服务 | DIRECT |
+| 19 | 🌍 非中国（境外流量） | 自动节点 |
+| 20 | GEOIP CN | DIRECT |
+| 21 | 🐟 漏网之鱼（兜底） | 自动节点 |
 
 ## 规则集来源
 
@@ -149,6 +151,7 @@
 - [iab0x00/ProxyRules](https://github.com/iab0x00/ProxyRules) — AI 服务补充规则
 - `Apple_Domain.list` 发布时从 blackmatrix7 Apple bare domain set 转换生成，作为完整 Apple 域名规则
 - `Apple.list` 是本仓维护的 Apple overlay / 精简补充规则，用于补充 iCloud Photos / CloudKit / Apple CDN 直连域名
+- [RocM301/Apple-Rule](https://github.com/RocM301/Apple-Rule) — Apple Intelligence / Siri / Private Relay 分流规则，默认使用美国节点
 - `HK_Broker.list` 补充富途 / moomoo / 长桥 / 老虎 / TradeUP / Schwab 证券域名及交易 IP 段
 
 ## 其他特性
