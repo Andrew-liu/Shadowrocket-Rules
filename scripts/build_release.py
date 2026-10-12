@@ -320,14 +320,6 @@ def validate_release(output: Path) -> None:
                 "🔍 谷歌服务 = select,🚀 节点选择,🇯🇵 日区优先,🇯🇵 日本节点,🇭🇰 香港节点,"
                 "PROXY,DIRECT,REJECT,policy-select-name=🚀 节点选择"
             ),
-            "US-first Apple AI policy": (
-                "🧠 Apple AI = select,🇺🇸 美国节点,🛟 自动节点,🚀 节点选择,PROXY,DIRECT,REJECT,"
-                "policy-select-name=🇺🇸 美国节点"
-            ),
-            "Apple AI ruleset": (
-                "RULE-SET,https://raw.githubusercontent.com/RocM301/Apple-Rule/refs/heads/main/"
-                "Apple-AI.list,🧠 Apple AI"
-            ),
             "Japan-first X policy": (
                 "𝕏 X 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
                 "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日区优先"
