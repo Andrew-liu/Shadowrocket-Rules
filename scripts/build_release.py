@@ -296,7 +296,7 @@ def validate_release(output: Path) -> None:
             errors.append("Shadowrocket.conf does not reference generated Apple_Domain.list")
 
         required_conf_fragments = {
-            "v1.1 config version": "# 配置版本: v1.1",
+            "v1.2 config version": "# 配置版本: v1.2",
             "automatic node health check": (
                 "🛟 自动节点 = url-test,url=https://www.gstatic.com/generate_204,"
                 "interval=300,tolerance=180,timeout=5"
@@ -312,17 +312,17 @@ def validate_release(output: Path) -> None:
             "automatic global policy": "🌍 非中国 = select,🛟 自动节点",
             "automatic final policy": "🐟 漏网之鱼 = select,🛟 自动节点",
             "GitHub Raw bootstrap rule": "DOMAIN,raw.githubusercontent.com,🛟 自动节点",
-            "Japan-first AI policy": (
-                "🤖 AI 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
-                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日区优先"
+            "main-policy-first AI policy": (
+                "🤖 AI 服务 = select,🚀 节点选择,🇯🇵 日本节点,🇺🇸 美国节点,"
+                "PROXY,DIRECT,REJECT,policy-select-name=🚀 节点选择"
             ),
             "main-policy-first Google policy": (
                 "🔍 谷歌服务 = select,🚀 节点选择,🇯🇵 日区优先,🇯🇵 日本节点,🇭🇰 香港节点,"
                 "PROXY,DIRECT,REJECT,policy-select-name=🚀 节点选择"
             ),
-            "Japan-first X policy": (
-                "𝕏 X 服务 = select,🇯🇵 日区优先,🇯🇵 日本节点,🇺🇸 美国节点,🛟 自动节点,"
-                "🚀 节点选择,PROXY,DIRECT,REJECT,policy-select-name=🇯🇵 日区优先"
+            "main-policy-first X policy": (
+                "𝕏 X 服务 = select,🚀 节点选择,🇯🇵 日本节点,🇺🇸 美国节点,"
+                "PROXY,DIRECT,REJECT,policy-select-name=🚀 节点选择"
             ),
             "X core bootstrap rule": "DOMAIN-SUFFIX,x.com,𝕏 X 服务",
             "X media bootstrap rule": "DOMAIN-SUFFIX,twimg.com,𝕏 X 服务",
